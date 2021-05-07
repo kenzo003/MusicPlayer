@@ -39,11 +39,13 @@ class MusicPlayerView {
         //
         this.createAudio();
         this.createVisualizer();
+        // setInterval(this.drawData.bind(this), 12);
+        // this.drawData();
         this.dispatch();
     }
 
     dispatch() {
-        this.model.analyse.audio.onloadeddata = ()=>{
+        this.model.analyse.audio.onloadeddata = () => {
             this.markTrackPlayToPlaylist();
         };
         //Добавление трека в плейлист
@@ -69,13 +71,12 @@ class MusicPlayerView {
         }.bind(this, this.btn_addTrack));
 
         //Воспроизведение
-        this.btn_play.onclick = ()=>{
+        this.btn_play.onclick = () => {
             var audio = this.model.analyse.audio;
-            if (audio.paused){
+            if (audio.paused) {
                 this.btn_play.firstChild.className = "fa fa-pause";
                 audio.play();
-            }
-            else {
+            } else {
                 this.btn_play.firstChild.className = "fa fa-play";
                 audio.pause();
             }
@@ -89,9 +90,32 @@ class MusicPlayerView {
             this.controller.playNextTrack();
         };
 
-        this.model.analyse.audio.onended = () =>{
+        this.model.analyse.audio.onended = () => {
             this.controller.playNextTrack();
         };
+    }
+
+
+    drawData() {
+        for (var track of this.model.playlist.tracks) {
+            this.drawTrack(track);
+        }
+        this.model.pauseTrack(this.model.currentTrack);
+    }
+
+    drawTrack(track) {
+        if (track){
+            var btn = document.createElement('button');
+            btn.className = "list-group-item list-group-item-action";
+            btn.type = "button";
+            btn.id = "track_" + track.id;
+            btn.textContent = track.name;
+            btn.onclick = () => {
+                this.controller.playTrack(track);
+            };
+            this.inputPlaylist.appendChild(btn);
+        }
+
     }
 
     createInterfacePlayer() {
@@ -174,6 +198,7 @@ class MusicPlayerView {
         footer.setAttribute('class', 'card-footer border border-secondary');
         var audio = document.createElement('div');
         audio.id = "audio";
+        audio.setAttribute('allow', "autoplay");
 
         var btn_music = document.createElement('div');
         btn_music.className = "d-flex justify-content-center p-2";
@@ -253,6 +278,12 @@ class MusicPlayerView {
                 this.drawBird(loc);
                 loc.move();
             }
+
+            if (this.model.state == "success"){
+                this.drawData();
+                this.model.state = "done";
+            }
+
         }.bind(this), 12);
     }
 
@@ -296,7 +327,7 @@ class MusicPlayerView {
         ctx.restore();
     }
 
-    drawRope (rope) {
+    drawRope(rope) {
         var ctx = this.ctx;
         ctx.save();
         ctx.beginPath();
@@ -322,7 +353,8 @@ class MusicPlayerView {
     createAudio() {
         var audio = this.model.analyse.audio;
 
-        audio.setAttribute('style', 'width: 100%')
+        audio.setAttribute('style', 'width: 100%');
+        // audio.setAttribute('allow', 'autoplay');
         this.inputAudio.appendChild(audio);
         this.model.analyse.update = function (bands) {
             var ln = Visualizer.MAX_PARTICLES;
@@ -347,8 +379,10 @@ class MusicPlayerView {
 
         var id = this.model.currentTrack.id;
         var btn = document.getElementById("track_" + id);
-        btn.className = "list-group-item active";
-        this.plays_track = btn;
+        if (btn){
+            btn.className = "list-group-item active";
+            this.plays_track = btn;
+        }
     }
 
 }

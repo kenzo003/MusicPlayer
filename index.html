@@ -19,22 +19,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
             integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
             crossorigin="anonymous"></script>
+
     <!--    font-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <!--    <link rel="stylesheet" href="assets/css/style.css">-->
 </head>
 
 <body>
+<button id="click">click</button>
 
 
 <script src="assets/js/Utils.js"></script>
 <script src="assets/js/MusicPlayerModel.js"></script>
 <script src="assets/js/MusicPlayerView.js"></script>
 <script src="assets/js/MusicPlayerController.js"></script>
+<script src="assets/js/IndexDB.js"></script>
 <script>
-    var model = new MusicPlayerModel();
-    var controller = new MusicPlayerController(model);
-    var view = new MusicPlayerView(model, controller);
+    document.getElementById('click').onclick = function (event) {
+        event.target.disabled = true;
+        // var context = new AudioContext();
+        var model = new MusicPlayerModel();
+        var controller = new MusicPlayerController(model);
+        var view = new MusicPlayerView(model, controller);
+        var bd = new IndexDB();
+    }
+
+
 </script>
 </body>
 </html>
